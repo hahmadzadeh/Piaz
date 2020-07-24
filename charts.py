@@ -48,8 +48,10 @@ class Outputs(AnalyzeCsvs):
 
     def queuesMean(self):
         print("mean of number of persons in triage is: %f"%(self.triageDf['total'].mean()))
-        
-        print(self.roomsDf.head())
+        numberOfRooms = self.roomsDf['id'].max()
+        for i in range(1,numberOfRooms+1):
+            print("mean of room number %d is: %f"%(i, self.roomsDf[self.roomsDf['id']==i]['total'].mean()))
+        #print(self.roomsDf.head())
 
 class AdditionalCharts(AnalyzeCsvs):
     def __init__(self, path):
