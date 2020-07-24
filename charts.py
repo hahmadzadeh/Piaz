@@ -9,27 +9,47 @@ class AnalyzeCsvs():
         self.roomsDf = pd.read_csv(path+'room.csv')
         self.triageDf = pd.read_csv('triage.csv')
         self.addPresenceCol()
+        self.addWaitCol()
 
     def addPresenceCol(self):
         presCol = np.zeros(self.patientDf.shape[0])
         for i in range(self.patientDf.shape[0]):
             if self.patientDf['bored'][i] == False:
                 presCol[i] = self.patientDf['finish'][i] - self.patientDf['arriaval'][i]
-                if presCol[i]>200:
-                    print("iii")
             else:
                 presCol[i] = self.patientDf['borredom'][i]
         self.patientDf['presenceTime'] = presCol
 
-
+    def addWaitCol(self):
+        waitCol = np.zeros(self.patientDf.shape[0])
+        for i in range(self.patientDf.shape[0]):
+            if self.patientDf['bored'][i] == False:
+                waitCol[i] = self.patientDf['inspection'][i] - self.patientDf['arriaval'][i]
+            else:
+                waitCol[i] = self.patientDf['borredom'][i]
+        self.patientDf['waitTime'] = waitCol
 
 class Outputs(AnalyzeCsvs):
     def __init__(self, path):
         super().__init__(path)
 
     def meanPresInSystem(self):
-        print("without covid19 patients average presense in system is: %f"%(self.patientDf['presenceTime'].mean()))
-    
+        print("without covid19 patients average presense in system is: %f"%(self.patientDf[self.patientDf['covid19']==False]['presenceTime'].mean()))
+        print("with covid19 patients average presense in system is: %f"%(self.patientDf[self.patientDf['covid19']==True]['presenceTime'].mean()))
+        print("all patients average presense in system is: %f"%(self.patientDf['presenceTime'].mean()))
+
+    def meanWaitInSystem(self):
+        print("without covid19 patients average wait in system is: %f"%(self.patientDf[self.patientDf['covid19']==False]['waitTime'].mean()))
+        print("with covid19 patients average wait in system is: %f"%(self.patientDf[self.patientDf['covid19']==True]['waitTime'].mean()))
+        print("all patients average wait in system is: %f"%(self.patientDf['waitTime'].mean()))
+
+    def leavedPatients(self):
+        print("number of leaved patients is: %d"%(self.patientDf[self.patientDf['bored']==True].shape[0]))
+
+    def queuesMean(self):
+        print("mean of number of persons in triage is: %f"%(self.triageDf['total'].mean()))
+        
+        print(self.roomsDf.head())
 
 class AdditionalCharts(AnalyzeCsvs):
     def __init__(self, path):
@@ -106,4 +126,10 @@ class AdditionalCharts(AnalyzeCsvs):
 analyzeCsv = Outputs('')
 #chart = AdditionalCharts('')
 #chart.triageLen()
-analyzeCsv.meanPresInSystem()
+
+
+#analyzeCsv.meanPresInSystem()
+#analyzeCsv.meanWaitInSystem()
+#analyzeCsv.leavedPatients()
+
+analyzeCsv.queuesMean()
