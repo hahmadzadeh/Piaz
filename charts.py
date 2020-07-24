@@ -3,23 +3,37 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+class AnalyzeCsvs():
+    def __init__(self, path):
+        self.patientDf = pd.read_csv(path+'./patients.csv')
+        self.roomsDf = pd.read_csv(path+'room.csv')
+        self.triageDf = pd.read_csv('triage.csv')
+        self.addPresenceCol()
 
-class Outputs()
-    def __init__(self, patientDf, roomDf, triageDf):
-        self.patientDf = patientDf
-        self.roomDf = roomDf
-        self.triageDf = triageDf
+    def addPresenceCol(self):
+        presCol = np.zeros(self.patientDf.shape[0])
+        for i in range(self.patientDf.shape[0]):
+            if self.patientDf['bored'][i] == False:
+                presCol[i] = self.patientDf['finish'][i] - self.patientDf['arriaval'][i]
+                if presCol[i]>200:
+                    print("iii")
+            else:
+                presCol[i] = self.patientDf['borredom'][i]
+        self.patientDf['presenceTime'] = presCol
+
+
+
+class Outputs(AnalyzeCsvs):
+    def __init__(self, path):
+        super().__init__(path)
 
     def meanPresInSystem(self):
-        
+        print("without covid19 patients average presense in system is: %f"%(self.patientDf['presenceTime'].mean()))
+    
 
-
-
-class AdditionalCharts:
-    def __init__(self, patientDf, roomDf, triageDf):
-        self.patientDf = patientDf
-        self.roomDf = roomDf
-        self.triageDf = triageDf
+class AdditionalCharts(AnalyzeCsvs):
+    def __init__(self, path):
+        super().__init__(path)
 
 
     def triageLen(self):
@@ -30,7 +44,7 @@ class AdditionalCharts:
 #        plt.plot(self.triageDf['clock'], self.triageDf['covid19'])
         plt.show()
 
-    def presenceFreq(self):
+    def presenceFreq(self): #TODO: kasaii ke bored=true hast alan ignore mishan ke nabayad beshan.
 
         maxClock = -1
         ctr = 1
@@ -87,12 +101,9 @@ class AdditionalCharts:
 
 
 
-def readCsvs(path):
-    patients = pd.read_csv(path+'./patients.csv')
-    rooms = pd.read_csv(path+'room.csv')
-    triage = pd.read_csv('triage.csv')
-    return patients, rooms, triage
 
-a,b,c = readCsvs('')
-chart = AdditionalCharts(a, b, c)
-chart.triageLen()
+
+analyzeCsv = Outputs('')
+#chart = AdditionalCharts('')
+#chart.triageLen()
+analyzeCsv.meanPresInSystem()
