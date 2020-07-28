@@ -66,7 +66,7 @@ class Outputs(AnalyzeCsvs):
 
     def changeDocorRate(self):
         print("part6")
-        print("if we set mean of random.exponential=0.5 for doctors then there would be no queue in rooms.\n"
+        print("if we set mean of random.exponential at least 0.5 for doctors then there would be no queue in rooms.\n"
               "one room simulated csv with this parameters is attached to this code.")
 
 
